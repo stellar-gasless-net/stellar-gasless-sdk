@@ -13,11 +13,12 @@ export class PasskeyAdapter {
    * Request browser WebAuthn / Passkey biometric signature (TouchID / FaceID)
    */
   static async signChallenge(challengeHex: string): Promise<PasskeyCredential> {
-    if (!navigator.credentials || !navigator.credentials.get) {
-      throw new Error('WebAuthn Passkeys are not supported in this browser environment.');
+    if (typeof window === 'undefined' || !navigator.credentials || !navigator.credentials.get) {
+      throw new Error('WebAuthn Passkeys are not supported in this environment.');
     }
 
-    const challengeBuffer = Uint8Array.from(Buffer.from(challengeHex, 'hex'));
+    const match = challengeHex.match(/.{1,2}/g);
+    const challengeBuffer = new Uint8Array(match ? match.map((byte) => parseInt(byte, 16)) : []);
 
     const credential = (await navigator.credentials.get({
       publicKey: {
