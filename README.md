@@ -1,98 +1,45 @@
-# ⚡ `@stellar-gasless/sdk`
+# 📦 `@stellar-gasless/sdk` (`stellar-gasless-sdk`)
 
-[![npm version](https://img.shields.io/badge/npm-v1.0.0-cb3837.svg?style=for-the-badge&logo=npm)](https://www.npmjs.com/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-blue.svg?style=for-the-badge&logo=typescript)](https://www.typescriptlang.org/)
-[![React](https://img.shields.io/badge/React-Hooks--Ready-61dafb.svg?style=for-the-badge&logo=react)](https://react.dev/)
+[![npm](https://img.shields.io/badge/npm-v1.0.0-CB3837?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/)
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](./LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=for-the-badge)](./CONTRIBUTING.md)
 
-Official Client SDK & Wallet Integration Toolkit for enabling **Gasless Meta-Transactions** and **Paymaster Fee Delegation** in Stellar & Soroban web applications.
+**Official TypeScript Client SDK & React Integration Toolkit providing dApps with seamless 1-line gasless execution, WebAuthn Passkey biometric signers, and Freighter/xBull/Albedo wallet adapters.**
 
----
-
-## 🚀 Key Features
-
-* **Zero-Gas User Onboarding**: Allows dApp users to execute smart contract calls without holding XLM native gas tokens.
-* **React Hooks**: Pre-packaged `useGaslessTransaction` hook with built-in loading spinners and error state handling.
-* **WebAuthn / Passkeys Adapter**: Sign Soroban authorization entries using browser-native TouchID / FaceID biometrics.
-* **Stellar Wallet Adapters**: Plug-and-play wallet signers for Freighter and xBull extension wallets.
-* **Resilient Relayer Failover**: Automatic fallback relayer endpoints if the primary relayer node is degraded.
+This package is the client-side SDK library for the [`stellar-gasless-net`](https://github.com/stellar-gasless-net) ecosystem.
 
 ---
 
-## 📦 Installation
+## 🛠️ SDK Features & Adapters
 
-```bash
-npm install @stellar-gasless/sdk @stellar/stellar-sdk
-# or
-yarn add @stellar-gasless/sdk @stellar/stellar-sdk
-```
+* **`GaslessClient` (`client.ts`)**: Primary client interface handling payload submission, RPC failover, and status polling.
+* **WebAuthn Passkey Adapter (`passkey.ts`)**: Browser-native WebAuthn TouchID / FaceID biometric signer adapter.
+* **Browser Wallet Adapters**: Integrated adapters for Freighter (`freighter.ts`), xBull (`xbull.ts`), and Albedo (`albedo.ts`).
+* **React Hooks (`useGasless.ts`)**: Ready-to-use `useGaslessTransaction` React hook for instant dApp UI integration.
 
 ---
 
-## 💡 Quickstart Integration
-
-### 1. Initialize `GaslessClient`
+## 🚀 Quick Usage Example
 
 ```typescript
 import { GaslessClient } from '@stellar-gasless/sdk';
 
 const gaslessClient = new GaslessClient({
   relayerUrl: 'https://relayer.stellar-gasless.net',
-  dappApiKey: 'st_gas_live_your_api_key_here',
+  dappApiKey: 'st_gas_live_e92a84b19f2a',
 });
-```
 
-### 2. React Hook Example (`Next.js` / `React`)
-
-```tsx
-import React from 'react';
-import { useGaslessTransaction } from '@stellar-gasless/sdk';
-
-export function MintNFTButton({ signedInnerTxXdr }: { signedInnerTxXdr: string }) {
-  const { submit, isSubmitting, txHash, error } = useGaslessTransaction(gaslessClient);
-
-  const handleGaslessMint = async () => {
-    const result = await submit(signedInnerTxXdr);
-    if (result?.success) {
-      console.log('NFT Minted Gaslessly! Tx Hash:', result.hash);
-    }
-  };
-
-  return (
-    <div>
-      <button onClick={handleGaslessMint} disabled={isSubmitting}>
-        {isSubmitting ? 'Sponsoring Gas & Minting...' : 'Gasless Mint NFT (0 XLM)'}
-      </button>
-
-      {txHash && <p>Success! Hash: {txHash}</p>}
-      {error && <p style={{ color: 'red' }}>Error: {error}</p>}
-    </div>
-  );
-}
-```
-
-### 3. Biometric Passkey Signing (`TouchID` / `FaceID`)
-
-```typescript
-import { PasskeyAdapter } from '@stellar-gasless/sdk';
-
-// Trigger native browser biometric popup
-const credential = await PasskeyAdapter.signChallenge(challengeHexPayload);
-console.log('Signed with Passkey Biometrics:', credential);
+// Request 0-XLM gasless execution
+const result = await gaslessClient.submitGaslessTransaction(signedInnerTxXdr);
+console.log('Gasless Meta-Tx Hash:', result.hash);
 ```
 
 ---
 
-## 📋 Wallet Compatibility Matrix
+## 🤝 Contributing & Governance
 
-| Wallet / Signer | Gasless Signature Support | Adapter Module |
-| :--- | :--- | :--- |
-| **Passkeys / WebAuthn** | ✅ Native Biometrics (TouchID/FaceID) | `@stellar-gasless/sdk/passkey` |
-| **Freighter Wallet** | ✅ Ed25519 Off-chain Intent | `@stellar-gasless/sdk/freighter` |
-| **xBull Wallet** | ✅ Supported | `@stellar-gasless/sdk/xbull` |
-| **Albedo / LOBSTR** | ✅ Supported | Via standard Horizon XDR payload |
-
----
-
-## 📄 License
-
-Distributed under the MIT License. See `LICENSE` for details.
+Please read our enterprise contributor guidelines before submitting PRs:
+* 📖 **[SDK Contributor Guide](./CONTRIBUTING.md)**
+* 🛡️ **[Security Policy](./SECURITY.md)**
