@@ -1,4 +1,4 @@
-# 📦 `@stellar-gasless/sdk` (`stellar-gasless-sdk`)
+# `@stellar-gasless/sdk` (`stellar-gasless-sdk`)
 
 [![npm](https://img.shields.io/badge/npm-v1.0.0-CB3837?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -12,7 +12,7 @@ This repository houses the **Client SDK & Developer Integration Toolkit** for th
 
 ---
 
-## 🏛️ SDK Integration Architecture
+## SDK Integration Architecture
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
@@ -40,7 +40,7 @@ This repository houses the **Client SDK & Developer Integration Toolkit** for th
 
 ---
 
-## 🛠️ Detailed Component Capabilities
+## Detailed Component Capabilities
 
 ### 1. `GaslessClient` (`src/client.ts`)
 * **1-Line Transport**: Submits off-chain signed intents to the Relayer service over HTTP, handling auto-retry, status polling, and error parsing.
@@ -56,7 +56,7 @@ This repository houses the **Client SDK & Developer Integration Toolkit** for th
 
 ---
 
-## 💻 Full Code Integration Examples
+## Full Code Integration Examples
 
 ### Example 1: Submit Meta-Transaction via TypeScript Client
 ```typescript
@@ -83,20 +83,20 @@ console.log('Passkey Credential ID:', credential.id);
 
 ---
 
-## 🤝 Contributing & `CONTRIBUTING.md` Guidelines
+## Contributing & `CONTRIBUTING.md` Guidelines
 
 Please review our dedicated **[`CONTRIBUTING.md`](./CONTRIBUTING.md)** guide before opening pull requests:
-* 📖 **[SDK Contributor Guide](./CONTRIBUTING.md)**
-* 🛡️ **[Security Disclosure Policy](./SECURITY.md)**
+* **[SDK Contributor Guide](./CONTRIBUTING.md)**
+* **[Security Disclosure Policy](./SECURITY.md)**
 
-### 📌 Pull Request Checklist:
+### Pull Request Checklist:
 - [ ] Claim an issue tagged `good first issue`, `intermediate`, or `advanced`.
 - [ ] Run `npm test` and verify TypeScript compilation (`npm run build`).
 - [ ] Follow Conventional Commits format (`feat: ...`, `fix: ...`, `docs: ...`).
 
 ---
 
-## 🔮 Future Improvements & SDK Roadmap
+## Future Improvements & SDK Roadmap
 
 - [ ] **React Native & Flutter Adapters**: Mobile SDK adapters supporting mobile WebAuthn passkey enclaves.
 - [ ] **Vue & Svelte Component Libraries**: Native hooks and wrappers for Vue 3 and Svelte.
