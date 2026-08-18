@@ -101,3 +101,8 @@ Please review our dedicated **[`CONTRIBUTING.md`](./CONTRIBUTING.md)** guide bef
 - [ ] **React Native & Flutter Adapters**: Mobile SDK adapters supporting mobile WebAuthn passkey enclaves.
 - [ ] **Vue & Svelte Component Libraries**: Native hooks and wrappers for Vue 3 and Svelte.
 - [ ] **Auto-Retry Failover Engine**: Multi-relayer endpoint failover routing.
+
+
+## docs: Quickstart guide & Next.js integration example
+
+Documentation reference and guidelines for #31.
