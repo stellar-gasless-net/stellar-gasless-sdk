@@ -18,21 +18,36 @@ export class GaslessClient {
   }
 
   /**
-   * Submit an inner transaction signed by user to relayer
+   * Submit an inner transaction signed by user to relayer with safe JSON parsing
    */
   async submitGaslessTransaction(innerTransactionXdr: string): Promise<RelayResponse> {
-    const response = await fetch(`${this.config.relayerUrl}/v1/relay`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-API-Key': this.config.dappApiKey,
-      },
-      body: JSON.stringify({
-        innerTransactionXdr,
-        dappApiKey: this.config.dappApiKey,
-      }),
-    });
+    try {
+      const response = await fetch(`${this.config.relayerUrl}/v1/relay`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-API-Key': this.config.dappApiKey,
+        },
+        body: JSON.stringify({
+          innerTransactionXdr,
+          dappApiKey: this.config.dappApiKey,
+        }),
+      });
 
-    return await response.json();
+      const text = await response.text();
+      try {
+        return JSON.parse(text);
+      } catch (parseError) {
+        return {
+          success: false,
+          error: `Non-JSON HTTP ${response.status} response from Relayer server: ${text.substring(0, 100)}`,
+        };
+      }
+    } catch (networkError: any) {
+      return {
+        success: false,
+        error: networkError.message || 'Failed to connect to Relayer endpoint',
+      };
+    }
   }
 }
