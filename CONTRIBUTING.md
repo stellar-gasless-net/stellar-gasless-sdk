@@ -62,10 +62,9 @@ src/
 │   ├── xbull.ts        # xBull extension wallet adapter
 │   └── albedo.ts       # Albedo web wallet adapter
 ├── react/
-│   ├── useGasless.ts   # React hook for transaction submission
-│   └── GaslessProvider.tsx # Context Provider for dApp state
+│   └── useGasless.ts   # React hook for transaction submission (no context provider yet — pass a GaslessClient directly)
 ├── utils/
-│   └── xdr_parser.ts   # Raw XDR authorization inspector
+│   └── xdr_parser.ts   # Decodes a real transaction envelope XDR into a summary
 ├── client.ts           # Core GaslessClient class
 └── index.ts            # Public module exporter
 ```
@@ -74,12 +73,14 @@ src/
 
 ## 🧪 Code Style & Testing Requirements
 
-- Maintain 100% strict TypeScript typing without using `any`.
+- Maintain strict TypeScript typing where practical (some browser wallet globals still need `any` since there are no official types).
 - Keep React hooks reactive and clean.
-- Run compilation verification:
+- Run tests and compilation verification before opening a PR:
   ```bash
+  npm test
   npm run build
   ```
+CI runs both on every push and PR — see `.github/workflows/ci.yml`.
 
 ---
 

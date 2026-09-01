@@ -1,3 +1,7 @@
+// NOTE: signTransaction() is not implemented yet for any adapter in this SDK
+// (Freighter, xBull, or Albedo) — only wallet detection and public-key retrieval
+// exist so far. Getting an actual user signature on the inner transaction is
+// still open work; see the repo's issue tracker.
 export class FreighterAdapter {
   /**
    * Check if Freighter browser extension wallet is installed

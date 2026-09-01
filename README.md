@@ -6,7 +6,9 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](./LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-Welcome-brightgreen.svg?style=for-the-badge)](./CONTRIBUTING.md)
 
-**Official TypeScript Client SDK & React Integration Toolkit providing dApps with seamless 1-line gasless execution, WebAuthn Passkey biometric signers, and Freighter/xBull/Albedo wallet adapters.**
+**TypeScript client SDK for talking to a `stellar-gasless-relayer` instance: submit a signed inner transaction and get it relayed as a sponsored FeeBumpTransaction, plus a WebAuthn passkey signer and wallet-detection helpers.**
+
+**Current status:** `GaslessClient.submitGaslessTransaction()` and `PasskeyAdapter.signChallenge()` are implemented and tested. The Freighter/xBull/Albedo adapters currently only *detect* whether those wallets are present (Freighter also fetches a public key) — none of them can sign a transaction yet. There is no high-level "build a contract call and sign it in one line" helper; you build and sign the inner transaction yourself before handing it to this SDK.
 
 This repository houses the **Client SDK & Developer Integration Toolkit** for the [`stellar-gasless-net`](https://github.com/stellar-gasless-net) ecosystem.
 
@@ -46,13 +48,14 @@ This repository houses the **Client SDK & Developer Integration Toolkit** for th
 * **1-Line Transport**: Submits off-chain signed intents to the Relayer service over HTTP, handling auto-retry, status polling, and error parsing.
 
 ### 2. `PasskeyAdapter` (`src/adapters/passkey.ts`)
-* **Browser WebAuthn Enclave**: Invokes browser TouchID / FaceID biometric hardware (`secp256r1`) for 0-XLM signature generation without requiring extension downloads.
+* **Browser WebAuthn Enclave**: Invokes the browser's WebAuthn `navigator.credentials.get()` (TouchID/FaceID/security key, whatever the platform authenticator is) to sign a challenge. Throws clearly if WebAuthn isn't available rather than failing silently.
 
-### 3. Extension Wallet Adapters (`src/adapters/`)
-* **Unified Wallet Interfaces**: Provides standardized adapters for Freighter (`freighter.ts`), xBull (`xbull.ts`), and Albedo (`albedo.ts`).
+### 3. Wallet Detection Adapters (`src/adapters/`)
+* **Freighter** (`freighter.ts`): `isAvailable()` and `getPublicKey()` are implemented. No `signTransaction()` yet.
+* **xBull** (`xbull.ts`) / **Albedo** (`albedo.ts`): detection only (`isAvailable()`). No public-key or signing methods yet.
 
 ### 4. React Toolkit (`src/react/useGasless.ts`)
-* **`useGaslessTransaction` Hook**: Exposes reactive state (`loading`, `txHash`, `error`, `executeGaslessTx`) for instant dApp UI integration.
+* **`useGaslessTransaction(client)` Hook**: takes a `GaslessClient` instance, exposes `{ submit, isSubmitting, error, txHash }`. `submit(signedInnerTxXdr)` expects a transaction you've already built and signed — see the usage example below.
 
 ---
 
@@ -63,11 +66,11 @@ This repository houses the **Client SDK & Developer Integration Toolkit** for th
 import { GaslessClient } from '@stellar-gasless/sdk';
 
 const gaslessClient = new GaslessClient({
-  relayerUrl: 'https://relayer.stellar-gasless.net',
-  dappApiKey: 'st_gas_live_e92a84b19f2a',
+  relayerUrl: 'https://your-relayer-domain.example', // your own deployed stellar-gasless-relayer
+  dappApiKey: 'YOUR_DAPP_API_KEY',
 });
 
-// Request 0-XLM gasless execution
+// signedInnerTxXdr must already be built and signed by the user before this call.
 const result = await gaslessClient.submitGaslessTransaction(signedInnerTxXdr);
 console.log('Gasless Meta-Tx Hash:', result.hash);
 ```
@@ -76,9 +79,29 @@ console.log('Gasless Meta-Tx Hash:', result.hash);
 ```typescript
 import { PasskeyAdapter } from '@stellar-gasless/sdk';
 
-// Prompt browser TouchID / FaceID enclave
+// Prompt the browser's WebAuthn platform authenticator (TouchID/FaceID/security key)
 const credential = await PasskeyAdapter.signChallenge(challengeHex);
 console.log('Passkey Credential ID:', credential.id);
+```
+
+### Example 3: React Hook
+```tsx
+import { GaslessClient, useGaslessTransaction } from '@stellar-gasless/sdk';
+
+const client = new GaslessClient({
+  relayerUrl: 'https://your-relayer-domain.example',
+  dappApiKey: 'YOUR_DAPP_API_KEY',
+});
+
+function GaslessSubmitButton({ signedInnerTxXdr }: { signedInnerTxXdr: string }) {
+  const { submit, isSubmitting, txHash, error } = useGaslessTransaction(client);
+
+  return (
+    <button onClick={() => submit(signedInnerTxXdr)} disabled={isSubmitting}>
+      {isSubmitting ? 'Submitting...' : 'Submit Gasless Tx'}
+    </button>
+  );
+}
 ```
 
 ---
@@ -91,13 +114,15 @@ Please review our dedicated **[`CONTRIBUTING.md`](./CONTRIBUTING.md)** guide bef
 
 ### Pull Request Checklist:
 - [ ] Claim an issue tagged `good first issue`, `intermediate`, or `advanced`.
-- [ ] Run `npm test` and verify TypeScript compilation (`npm run build`).
+- [ ] Run `npm test` (vitest) and verify TypeScript compilation (`npm run build`).
 - [ ] Follow Conventional Commits format (`feat: ...`, `fix: ...`, `docs: ...`).
 
 ---
 
 ## Future Improvements & SDK Roadmap
 
+- [ ] **Wallet signing**: `signTransaction()` for Freighter, xBull, and Albedo — currently only detection/public-key retrieval exists.
+- [ ] **High-level execute helper**: a `{contractId, method, params}` → build + sign + submit convenience wrapper (not built yet; you currently build and sign the inner transaction yourself).
 - [ ] **React Native & Flutter Adapters**: Mobile SDK adapters supporting mobile WebAuthn passkey enclaves.
 - [ ] **Vue & Svelte Component Libraries**: Native hooks and wrappers for Vue 3 and Svelte.
 - [ ] **Auto-Retry Failover Engine**: Multi-relayer endpoint failover routing.

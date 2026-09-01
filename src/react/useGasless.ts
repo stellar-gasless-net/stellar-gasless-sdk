@@ -1,6 +1,14 @@
 import { useState } from 'react';
 import { GaslessClient, RelayResponse } from '../client';
 
+// NOTE: This hook takes an already-built, already-signed inner transaction XDR —
+// it does not (yet) build a contract invocation for you or get it signed by a
+// connected wallet. A higher-level helper that takes {contractId, method, params}
+// and handles building + wallet signing + submission in one call does not exist
+// yet; it's on the roadmap, not shipped. Build the inner transaction yourself
+// (e.g. via `Contract.call()` from @stellar/stellar-sdk) and get it signed
+// (e.g. via PasskeyAdapter or a connected wallet) before passing it to submit().
+
 export interface UseGaslessReturn {
   submit: (innerTxXdr: string) => Promise<RelayResponse | null>;
   isSubmitting: boolean;
