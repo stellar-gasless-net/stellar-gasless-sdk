@@ -16,6 +16,12 @@ describe('wallet adapter detection outside a browser', () => {
     await expect(FreighterAdapter.getPublicKey()).rejects.toThrow(/not installed/);
   });
 
+  it('FreighterAdapter.signTransaction() throws with no window instead of hanging or faking a signature', async () => {
+    await expect(
+      FreighterAdapter.signTransaction('AAAAAgAAAAA=', { networkPassphrase: 'Test SDF Network ; September 2015' })
+    ).rejects.toThrow(/not installed/);
+  });
+
   it('XBullAdapter.isAvailable() is false with no window', async () => {
     expect(await XBullAdapter.isAvailable()).toBe(false);
   });
