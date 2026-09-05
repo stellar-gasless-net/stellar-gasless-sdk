@@ -1,5 +1,6 @@
 # `@stellar-gasless/sdk` (`stellar-gasless-sdk`)
 
+[![CI](https://github.com/stellar-gasless-net/stellar-gasless-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/stellar-gasless-net/stellar-gasless-sdk/actions/workflows/ci.yml)
 [![npm](https://img.shields.io/badge/npm-v1.0.0-CB3837?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
