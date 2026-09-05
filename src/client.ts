@@ -7,6 +7,7 @@ export interface GaslessConfig {
 export interface RelayResponse {
   success: boolean;
   hash?: string;
+  resultXdr?: string;
   error?: string;
 }
 

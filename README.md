@@ -51,7 +51,7 @@ This repository houses the **Client SDK & Developer Integration Toolkit** for th
 ## Detailed Component Capabilities
 
 ### 1. `GaslessClient` (`src/client.ts`)
-* **1-Line Transport**: Submits off-chain signed intents to the Relayer service over HTTP, handling auto-retry, status polling, and error parsing.
+* **1-Line Transport**: Submits off-chain signed intents to the Relayer service over HTTP in a single request, with safe JSON/network error parsing so a malformed response or dropped connection comes back as a typed `{success: false, error}` instead of a thrown exception. No retry or polling logic yet — see roadmap.
 
 ### 2. `PasskeyAdapter` (`src/adapters/passkey.ts`)
 * **Browser WebAuthn Enclave**: Invokes the browser's WebAuthn `navigator.credentials.get()` (TouchID/FaceID/security key, whatever the platform authenticator is) to sign a challenge. Throws clearly if WebAuthn isn't available rather than failing silently.
