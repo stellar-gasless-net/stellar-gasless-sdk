@@ -12,6 +12,8 @@
 //   1. `npm run build` in this repo (this example imports the built dist/, not src/).
 //   2. A stellar-gasless-relayer running locally with a funded RELAYER_SECRETS keypair
 //      (see that repo's README) — default expected at http://localhost:3001.
+//   3. That relayer's DAPP_API_KEYS must include "example-run" (the key this script sends)
+//      — the relayer now actually validates it and returns 401 otherwise.
 //
 // Run: node examples/e2e-gasless-relay.mjs
 //    or: SPONSOR_PUBLIC_KEY=G... node examples/e2e-gasless-relay.mjs   (fuller proof)
