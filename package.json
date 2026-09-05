@@ -4,6 +4,15 @@
   "description": "TypeScript SDK for dApps to integrate gasless meta-transactions on Stellar & Soroban",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/stellar-gasless-net/stellar-gasless-sdk.git"
+  },
+  "homepage": "https://github.com/stellar-gasless-net/stellar-gasless-sdk#readme",
+  "bugs": {
+    "url": "https://github.com/stellar-gasless-net/stellar-gasless-sdk/issues"
+  },
   "scripts": {
     "build": "tsc",
     "test": "vitest run",
