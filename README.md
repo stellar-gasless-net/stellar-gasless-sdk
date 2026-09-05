@@ -18,6 +18,13 @@ A third real bug was found and fixed on the relayer side during this same test: 
 
 This repository houses the **Client SDK & Developer Integration Toolkit** for the [`stellar-gasless-net`](https://github.com/stellar-gasless-net) ecosystem.
 
+## Why this is a real SDK, not a wrapper around fixtures
+
+- **The first time three separate repos in this ecosystem were exercised together.** `examples/e2e-gasless-relay.mjs` drives this SDK's actual built client against a real running `stellar-gasless-relayer` and a real deployed `stellar-zkident` contract — not three components independently unit-tested and assumed to work together.
+- **Two real integration bugs found by actually running it**, not just passing unit tests — a signed-vs-unsigned XDR footgun in `AssembledTransaction#toXDR()`, and a local-clock-skew timeout bug. Both documented with the fix, not swept under the rug.
+- **Honest stubs where real testing wasn't possible.** xBull and Albedo wallet adapters are detection-only, deliberately — this project won't ship signing code against wallets it has no way to actually verify against.
+- **Freighter signing is genuinely wired to the official `@stellar/freighter-api` package**, replacing an earlier version that probed an undocumented raw `window.freighter` global.
+
 ---
 
 ## SDK Integration Architecture
@@ -126,6 +133,15 @@ function GaslessSubmitButton({ signedInnerTxXdr }: { signedInnerTxXdr: string })
   );
 }
 ```
+
+---
+
+## Ecosystem
+
+Part of **stellar-gasless-net**'s gasless meta-transaction protocol suite, alongside:
+- [`soroban-gasless-contracts`](https://github.com/stellar-gasless-net/soroban-gasless-contracts) — the on-chain WASM contracts this SDK's `GaslessClient` ultimately triggers via a relayer
+- [`stellar-gasless-relayer`](https://github.com/stellar-gasless-net/stellar-gasless-relayer) — the backend service this SDK submits signed transactions to
+- [`gasless-relayer-dashboard`](https://github.com/stellar-gasless-net/gasless-relayer-dashboard) — an admin console with a real integration of this SDK's `GaslessClient` in its "Real Gasless Transaction" tab
 
 ---
 
