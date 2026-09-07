@@ -36,8 +36,18 @@ describe('wallet adapter detection outside a browser', () => {
     ).rejects.toThrow(/not available/);
   });
 
-  it('AlbedoAdapter.isAvailable() is false with no window (Node, not a browser)', () => {
-    expect(AlbedoAdapter.isAvailable()).toBe(false);
+  it('AlbedoAdapter.isAvailable() is false with no window (Node, not a browser)', async () => {
+    expect(await AlbedoAdapter.isAvailable()).toBe(false);
+  });
+
+  it('AlbedoAdapter.getPublicKey() throws with no window instead of hanging or faking a key', async () => {
+    await expect(AlbedoAdapter.getPublicKey()).rejects.toThrow(/not available/);
+  });
+
+  it('AlbedoAdapter.signTransaction() throws with no window instead of hanging or faking a signature', async () => {
+    await expect(
+      AlbedoAdapter.signTransaction('AAAAAgAAAAA=', { networkPassphrase: 'Test SDF Network ; September 2015' })
+    ).rejects.toThrow(/not available/);
   });
 
   it('PasskeyAdapter.signChallenge() throws a clear error with no WebAuthn support', async () => {
