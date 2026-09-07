@@ -69,18 +69,21 @@ src/
 └── index.ts            # Public module exporter
 ```
 
+**A real dependency tradeoff worth knowing about:** `xbull.ts` (2026-09-07) delegates to `@creit.tech/stellar-wallets-kit`'s `xBullModule` for its real connect/sign flow, rather than reimplementing xBull's bridge protocol from scratch. That package's full `StellarWalletsKit` class also bundles a preact-based wallet-picker modal UI, which has no place in a library — this SDK only imports the individual `modules/xbull` module class directly, never the full kit or its UI. Even so, the package becomes a real `dependencies` entry, meaning anyone installing this SDK installs the wallet-kit's own dependency tree too (it's substantial — Ledger/Trezor/WalletConnect support among others), whether or not they ever call `XBullAdapter`. `freighter.ts` deliberately stays on `@stellar/freighter-api` directly instead, since Freighter's own package is lightweight and there was no real dependency-weight reason to route it through the kit as well.
+
 ---
 
 ## 🧪 Code Style & Testing Requirements
 
 - Maintain strict TypeScript typing where practical (some browser wallet globals still need `any` since there are no official types).
 - Keep React hooks reactive and clean.
-- Run tests and compilation verification before opening a PR:
+- Run the same checks CI runs, in the same order, before opening a PR:
   ```bash
+  bash scripts/check-source-artifacts.sh
   npm test
   npm run build
   ```
-CI runs both on every push and PR — see `.github/workflows/ci.yml`.
+CI runs all three on every push and PR — see `.github/workflows/ci.yml`.
 
 ---
 

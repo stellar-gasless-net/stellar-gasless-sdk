@@ -19,6 +19,7 @@
     "example:e2e": "node examples/e2e-gasless-relay.mjs"
   },
   "dependencies": {
+    "@creit.tech/stellar-wallets-kit": "^2.6.0",
     "@stellar/freighter-api": "^6.0.1",
     "@stellar/stellar-sdk": "^12.0.0"
   },

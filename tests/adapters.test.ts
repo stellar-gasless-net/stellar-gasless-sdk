@@ -26,6 +26,16 @@ describe('wallet adapter detection outside a browser', () => {
     expect(await XBullAdapter.isAvailable()).toBe(false);
   });
 
+  it('XBullAdapter.getPublicKey() throws with no window instead of hanging or faking a key', async () => {
+    await expect(XBullAdapter.getPublicKey()).rejects.toThrow(/not available/);
+  });
+
+  it('XBullAdapter.signTransaction() throws with no window instead of hanging or faking a signature', async () => {
+    await expect(
+      XBullAdapter.signTransaction('AAAAAgAAAAA=', { networkPassphrase: 'Test SDF Network ; September 2015' })
+    ).rejects.toThrow(/not available/);
+  });
+
   it('AlbedoAdapter.isAvailable() is false with no window (Node, not a browser)', () => {
     expect(AlbedoAdapter.isAvailable()).toBe(false);
   });
