@@ -28,6 +28,17 @@ This repository houses the **Client SDK & Developer Integration Toolkit** for th
 
 ---
 
+## Contents
+
+- [SDK Integration Architecture](#sdk-integration-architecture)
+- [Detailed Component Capabilities](#detailed-component-capabilities)
+- [Full Code Integration Examples](#full-code-integration-examples)
+- [Ecosystem](#ecosystem)
+- [Contributing & CONTRIBUTING.md Guidelines](#contributing--contributingmd-guidelines)
+- [Future Improvements & SDK Roadmap](#future-improvements--sdk-roadmap)
+
+---
+
 ## SDK Integration Architecture
 
 ```
@@ -58,18 +69,34 @@ This repository houses the **Client SDK & Developer Integration Toolkit** for th
 
 ## Detailed Component Capabilities
 
-### 1. `GaslessClient` (`src/client.ts`)
+<details open>
+<summary><strong>1. <code>GaslessClient</code> (<code>src/client.ts</code>)</strong></summary>
+
 * **1-Line Transport**: Submits off-chain signed intents to the Relayer service over HTTP in a single request, with safe JSON/network error parsing so a malformed response or dropped connection comes back as a typed `{success: false, error}` instead of a thrown exception. No retry or polling logic yet — see roadmap.
 
-### 2. `PasskeyAdapter` (`src/adapters/passkey.ts`)
+</details>
+
+<details open>
+<summary><strong>2. <code>PasskeyAdapter</code> (<code>src/adapters/passkey.ts</code>)</strong></summary>
+
 * **Browser WebAuthn Enclave**: Invokes the browser's WebAuthn `navigator.credentials.get()` (TouchID/FaceID/security key, whatever the platform authenticator is) to sign a challenge. Throws clearly if WebAuthn isn't available rather than failing silently.
 
-### 3. Wallet Adapters (`src/adapters/`)
+</details>
+
+<details open>
+<summary><strong>3. Wallet Adapters (<code>src/adapters/</code>)</strong></summary>
+
 * **Freighter** (`freighter.ts`): `isAvailable()`, `getPublicKey()`, and `signTransaction(xdr, { networkPassphrase, address? })` are all implemented, backed by the real `@stellar/freighter-api` package.
 * **xBull** (`xbull.ts`) / **Albedo** (`albedo.ts`): `isAvailable()`, `getPublicKey()`, and `signTransaction()` are all implemented (2026-09-07), backed by `@creit.tech/stellar-wallets-kit`'s individual `xBullModule`/`AlbedoModule` classes — real bridge-connect (xBull) and popup-intent (Albedo) flows, not stubs. Note xBull's and Albedo's `isAvailable()` don't do real extension detection the way Freighter's does — see each adapter's own doc comment for why that's genuinely how those two wallets' connection models work, not a shortcut.
 
-### 4. React Toolkit (`src/react/useGasless.ts`)
+</details>
+
+<details open>
+<summary><strong>4. React Toolkit (<code>src/react/useGasless.ts</code>)</strong></summary>
+
 * **`useGaslessTransaction(client)` Hook**: takes a `GaslessClient` instance, exposes `{ submit, isSubmitting, error, txHash }`. `submit(signedInnerTxXdr)` expects a transaction you've already built and signed — see the usage example below.
+
+</details>
 
 ---
 
