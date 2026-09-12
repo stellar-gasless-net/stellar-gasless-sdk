@@ -95,6 +95,7 @@ This repository houses the **Client SDK & Developer Integration Toolkit** for th
 <summary><strong>4. React Toolkit (<code>src/react/useGasless.ts</code>)</strong></summary>
 
 * **`useGaslessTransaction(client)` Hook**: takes a `GaslessClient` instance, exposes `{ submit, isSubmitting, error, txHash }`. `submit(signedInnerTxXdr)` expects a transaction you've already built and signed — see the usage example below.
+* **Imported from `@stellar-gasless/sdk/react`, not the package root (fixed 2026-09-12, v1.0.1).** Earlier versions re-exported the hooks from the root entry point, which meant `require('@stellar-gasless/sdk')` transitively loaded `react` even for a plain Node/vanilla-JS consumer with no React installed at all — a real `MODULE_NOT_FOUND` crash, caught by actually installing the published package fresh rather than trusting the type-check alone. `react` is an optional peer dependency; this subpath split is what actually makes that true.
 
 </details>
 
@@ -153,7 +154,8 @@ console.log('Passkey Credential ID:', credential.id);
 
 ### Example 3: React Hook
 ```tsx
-import { GaslessClient, useGaslessTransaction } from '@stellar-gasless/sdk';
+import { GaslessClient } from '@stellar-gasless/sdk';
+import { useGaslessTransaction } from '@stellar-gasless/sdk/react';
 
 const client = new GaslessClient({
   relayerUrl: 'https://your-relayer-domain.example',
@@ -173,7 +175,8 @@ function GaslessSubmitButton({ signedInnerTxXdr }: { signedInnerTxXdr: string })
 
 ### Example 4: Gate a Feature on a Real Verified Credential
 ```tsx
-import { useVerifiedCredential, STELLAR_ZKIDENT_TESTNET_CREDENTIAL_VERIFIER_ID } from '@stellar-gasless/sdk';
+import { STELLAR_ZKIDENT_TESTNET_CREDENTIAL_VERIFIER_ID } from '@stellar-gasless/sdk';
+import { useVerifiedCredential } from '@stellar-gasless/sdk/react';
 
 function VerifiedOnlyAction({ userAddress }: { userAddress: string }) {
   // Point credentialVerifierId at your own deployed credential_verifier-shaped contract
