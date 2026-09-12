@@ -98,6 +98,15 @@ This repository houses the **Client SDK & Developer Integration Toolkit** for th
 
 </details>
 
+<details open>
+<summary><strong>5. Verified-Credential Check (<code>src/utils/zkident.ts</code>, <code>src/react/useVerifiedCredential.ts</code>) — real, and usable against your own contract, not just ours</strong></summary>
+
+* **The same real gate our own relayer uses, published for any dApp (2026-09-12).** `hasVerifiedCredential(userAddress, options)` makes a real, read-only cross-contract `has_credential(user, credential_type)` check — the exact one `stellar-zklab/stellar-zkident`'s `reputation_nft::mint()` and `sybil_resistant_faucet::claim()` use on-chain, and the exact one `stellar-gasless-relayer` now uses server-side to tier sponsorship budgets. It's exposed here so any dApp using this SDK can add the same Sybil-resistance check client-side too, without depending on our relayer at all.
+* **Not hardcoded to our contract.** `credentialVerifierId` and `credentialType` are required arguments with no default — a dApp can point this at their own deployed `credential_verifier`-shaped contract, or at `STELLAR_ZKIDENT_TESTNET_CREDENTIAL_VERIFIER_ID` (this repo's own real testnet instance) if they want to check against zkident's ecosystem-wide credentials instead. There's no default specifically so a caller who forgets to configure this gets an obvious wrong answer, not a silent check against someone else's contract.
+* **Fails closed, on purpose.** Any RPC error, malformed response, or network failure is treated as "not verified," never thrown — a credential-check outage should degrade a caller's UI, not crash it. `useVerifiedCredential(options)` wraps the same check in the same `{checking, verified, error, check}` shape `useGaslessTransaction` already uses.
+
+</details>
+
 ---
 
 ## Full Code Integration Examples
@@ -162,6 +171,30 @@ function GaslessSubmitButton({ signedInnerTxXdr }: { signedInnerTxXdr: string })
 }
 ```
 
+### Example 4: Gate a Feature on a Real Verified Credential
+```tsx
+import { useVerifiedCredential, STELLAR_ZKIDENT_TESTNET_CREDENTIAL_VERIFIER_ID } from '@stellar-gasless/sdk';
+
+function VerifiedOnlyAction({ userAddress }: { userAddress: string }) {
+  // Point credentialVerifierId at your own deployed credential_verifier-shaped contract
+  // instead, if you're not checking against stellar-zkident's own ecosystem credentials.
+  const { check, verified, checking } = useVerifiedCredential({
+    credentialVerifierId: STELLAR_ZKIDENT_TESTNET_CREDENTIAL_VERIFIER_ID,
+    credentialType: 'kyc_tier_2',
+  });
+
+  return (
+    <div>
+      <button onClick={() => check(userAddress)} disabled={checking}>
+        {checking ? 'Checking...' : 'Check Verified Credential'}
+      </button>
+      {verified === true && <p>Verified — feature unlocked.</p>}
+      {verified === false && <p>Not verified — this address holds no matching credential.</p>}
+    </div>
+  );
+}
+```
+
 ---
 
 ## Ecosystem
@@ -170,6 +203,8 @@ Part of **stellar-gasless-net**'s gasless meta-transaction protocol suite, along
 - [`soroban-gasless-contracts`](https://github.com/stellar-gasless-net/soroban-gasless-contracts) — the on-chain WASM contracts this SDK's `GaslessClient` ultimately triggers via a relayer
 - [`stellar-gasless-relayer`](https://github.com/stellar-gasless-net/stellar-gasless-relayer) — the backend service this SDK submits signed transactions to
 - [`gasless-relayer-dashboard`](https://github.com/stellar-gasless-net/gasless-relayer-dashboard) — an admin console with a real integration of this SDK's `GaslessClient` in its "Real Gasless Transaction" tab
+
+**A real dependency outside stellar-gasless-net (2026-09-12).** `useVerifiedCredential`/`hasVerifiedCredential` (see §5 above) are a genuine runtime dependency on [`stellar-zklab/stellar-zkident`](https://github.com/stellar-zklab/stellar-zkident)'s `credential_verifier` interface — usable against zkident's own real deployed instance, or any dApp's own. This is the third real dependency across the two orgs this ecosystem is built from, alongside `stellar-zkident`'s own `sybil_resistant_faucet` and `stellar-gasless-relayer`'s sponsorship tiering.
 
 ---
 

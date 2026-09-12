@@ -4,4 +4,6 @@ export * from './adapters/freighter';
 export * from './adapters/xbull';
 export * from './adapters/albedo';
 export * from './react/useGasless';
+export * from './react/useVerifiedCredential';
 export * from './utils/xdr_parser';
+export * from './utils/zkident';
