@@ -1,7 +1,7 @@
 # `@stellar-gasless/sdk` (`stellar-gasless-sdk`)
 
 [![CI](https://github.com/stellar-gasless-net/stellar-gasless-sdk/actions/workflows/ci.yml/badge.svg)](https://github.com/stellar-gasless-net/stellar-gasless-sdk/actions/workflows/ci.yml)
-[![npm](https://img.shields.io/badge/npm-v1.0.0-CB3837?style=for-the-badge&logo=npm&logoColor=white)](https://www.npmjs.com/)
+[![npm](https://img.shields.io/npm/v/@stellar-gasless/sdk?style=for-the-badge&logo=npm&logoColor=white&color=CB3837)](https://www.npmjs.com/package/@stellar-gasless/sdk)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.4-3178C6?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18.x-61DAFB?style=for-the-badge&logo=react&logoColor=black)](https://react.dev/)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg?style=for-the-badge)](./LICENSE)
@@ -19,17 +19,33 @@ A third real bug was found and fixed on the relayer side during this same test: 
 
 This repository houses the **Client SDK & Developer Integration Toolkit** for the [`stellar-gasless-net`](https://github.com/stellar-gasless-net) ecosystem.
 
+## Installation
+
+**Genuinely published (2026-09-12)** — this is a real, installable package on the public npm registry, not just example code implying one:
+
+```bash
+npm install @stellar-gasless/sdk
+```
+
+`GaslessClient`, the wallet adapters, `XdrParser`, and `hasVerifiedCredential` all live at the package root and need nothing extra. The React hooks (`useGaslessTransaction`, `useVerifiedCredential`) live under a separate subpath — `react` is an optional peer dependency, and this split is what actually makes that true rather than contradicted by the code (see v1.0.1's fix, below):
+
+```typescript
+import { useGaslessTransaction, useVerifiedCredential } from '@stellar-gasless/sdk/react';
+```
+
 ## Why this is a real SDK, not a wrapper around fixtures
 
 - **The first time three separate repos in this ecosystem were exercised together.** `examples/e2e-gasless-relay.mjs` drives this SDK's actual built client against a real running `stellar-gasless-relayer` and a real deployed `stellar-zkident` contract — not three components independently unit-tested and assumed to work together.
 - **Two real integration bugs found by actually running it**, not just passing unit tests — a signed-vs-unsigned XDR footgun in `AssembledTransaction#toXDR()`, and a local-clock-skew timeout bug. Both documented with the fix, not swept under the rug.
 - **What were honest stubs are now real.** xBull and Albedo wallet adapters were detection-only, deliberately, until this project had a real way to verify signing against them without hand-rolling each wallet's own protocol — `@creit.tech/stellar-wallets-kit`'s individual module classes now provide that, real bridge-connect and popup-intent flows included.
 - **Freighter signing is genuinely wired to the official `@stellar/freighter-api` package**, replacing an earlier version that probed an undocumented raw `window.freighter` global.
+- **Actually published, and a real bug found by installing it fresh (2026-09-12).** v1.0.0 published clean by every check that didn't involve a real install — types checked, unit tests passed — but a genuine fresh `npm install` + `require()` (not just `tsc`) surfaced a real `MODULE_NOT_FOUND` crash for any non-React consumer, because the React hooks were re-exported from the package root. Fixed in v1.0.1 by moving them to `@stellar-gasless/sdk/react`; see Installation above.
 
 ---
 
 ## Contents
 
+- [Installation](#installation)
 - [SDK Integration Architecture](#sdk-integration-architecture)
 - [Detailed Component Capabilities](#detailed-component-capabilities)
 - [Full Code Integration Examples](#full-code-integration-examples)
