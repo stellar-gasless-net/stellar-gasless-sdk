@@ -75,6 +75,27 @@ src/
 
 ---
 
+## 🔄 Contributor Workflow
+
+### Step 1: Find an Issue
+Browse [open issues](https://github.com/stellar-gasless-net/stellar-gasless-sdk/issues) and pick one that matches your experience level:
+- [`good first issue`](https://github.com/stellar-gasless-net/stellar-gasless-sdk/issues?q=is%3Aissue+is%3Aopen+label%3A%22good+first+issue%22): small, well-scoped fixes — a missing type, a doc gap, a narrow bug.
+- `intermediate`: a new wallet adapter, hook behavior, or XDR parsing feature.
+- `advanced`: signing-flow security or cross-adapter architecture changes.
+
+Comment on the issue you want to work on so it doesn't get picked up twice.
+
+### Step 2: Branch & Implement
+```bash
+git checkout -b feat/issue-12-add-lobstr-adapter
+```
+If you're adding a new wallet, follow the existing shape in `src/adapters/` and keep imports narrow (see the dependency-tradeoff note above) rather than pulling in a full wallet-kit UI.
+
+### Step 3: Verify & Open a PR
+Run the checks in [Code Style & Testing Requirements](#-code-style--testing-requirements) below, then open a PR referencing the issue (e.g. `Closes #12`).
+
+---
+
 ## 🧪 Code Style & Testing Requirements
 
 - Maintain strict TypeScript typing where practical (some browser wallet globals still need `any` since there are no official types).
