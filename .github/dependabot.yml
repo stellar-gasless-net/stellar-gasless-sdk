@@ -1,0 +1,16 @@
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+    ignore:
+      # Pinned to v12 on purpose - v17 dropped CommonJS entirely, which this package's
+      # build can't consume yet. See issue #247 for the real architecture decision this
+      # needs (full ESM conversion, or lazy dynamic import restructuring) before bumping.
+      - dependency-name: "@stellar/stellar-sdk"
+        update-types: ["version-update:semver-major"]
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
