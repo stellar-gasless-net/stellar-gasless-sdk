@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.5.1",
-    "@types/react": "^18.3.3",
+    "@types/react": "^19.3.0",
     "typescript": "^7.0.2",
     "vitest": "^5.0.0"
   }
